@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+    command: php -S 0.0.0.0:8000 -t /var/www/app/public
+    volumes:
+      - ./:/var/www
+    ports:
+      - "8000:8000"
+
+  mssql:
+    platform: 'linux/amd64'
+    build:
+      context: .
+      dockerfile: mssql.Dockerfile
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
+
+  mysql:
+    image: 'mysql:5.7'
+    platform: 'linux/amd64'
+    restart: 'always'
+    expose:
+      - '3306'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'pass'
+      MYSQL_DATABASE: 'default'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
